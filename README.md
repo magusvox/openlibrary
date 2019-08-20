@@ -1,2 +1,2 @@
 # openlibrary
-Thats it
+This library has no intentions.
