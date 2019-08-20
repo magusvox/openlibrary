@@ -1,0 +1,32 @@
+# This is a MagusVOX program with educational prupose
+
+
+titles = [" Text Analyze ", " This is a Example ", " Text Transformation ", " Lorem Fucking ipsum ", ""]
+print(f"{'#' * 20} {titles[0]} {'#' * (40 - len(titles[0]))}")
+print(f"{'#' * 20} {titles[1]} {'#' * (40 - len(titles[1]))}")
+print("How many char : ", len(titles[1]))
+print(f"How many char without spaces: {len(titles[1].strip())}")
+print("How many 'i' has on text from 0 to  6: ", titles[1].count("i", 0, 6))
+print("How many 'e' on text: ", titles[1].count("e"))
+print(f"How many 'e and E' on text: {titles[1].upper().count('E')}")  #Combined func
+print("Where 'Example' is finded?: ", titles[1].find("Example"))
+print("Is there a word 'potato'?: ", titles[1].find("potato"))  # Return '-1' if the answer is no
+print("'Example' is on the prase? :", "Example" in titles[1])  # Boolean return
+print(f"From 0 to 10 char: {titles[1][:10]}")  # Aways a number before last parameter
+print(f"2 char 'Jump' entire text: {titles[1][::2]}")  # Proposital undefined 'range'
+print("\n")
+
+print(f"{'#' * 20} {titles[2]} {'#' * (40 - len(titles[2]))}")  # it manipulate only for print, not the variable
+print(f"{'#' * 20} {titles[3]} {'#' * (40 - len(titles[3]))}")
+print(f"{titles[3].replace('Fucking', 'CENSORED')} < < When 'Fucking' is replaced")
+print(f"{titles[3].replace(' ', '')} < < When spaces are removed")
+print(f"{titles[3].upper()} < < When text goes upper")
+print(f"{titles[3].lower()} < < When text goes lower")
+print(f"{titles[3].capitalize()} < < When text capitalize")
+stripprase = "   spaces on left and right    "
+print(f"{titles[3].strip()} < < When 'strip', it eliminate blank spaces left and right")
+print(f"{titles[3].rstrip()} < < When 'rstrip', eliminate only right spaces")
+print(f"{titles[3].lstrip()} < < When 'lstrip', same shit on inverse")
+print(f"{titles[3].split()} < < Spliting text")
+splitedtitle = titles[3].split()  # For Join func demonstration only
+print(f"{'-'.join(splitedtitle)} < < Join text with '-'")
