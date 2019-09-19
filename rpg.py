@@ -1,21 +1,10 @@
 # Missions:
 # [0] Main Mission  [1] Sub1    [2] Sub2    [3] Sub3
 import random, os
-from mainmenu import platform
+from display import boxer, hud
 
 
 # Main Initialization #
-allplayers = []
-allplayerscount = 2 # set to 1 just for test purpose
-player = ['', '']
-# Other Initialization #
-missioncount = 1
-missions = ['Main mission']
-missioncount += 1
-themessenger = ['Created by MagusVOX', 'First go to [2] Players and create the players who will play',
-'Now try the Round Manager', 'Explore the manager, you will see lots of useful Tools<']
-messengercount = 1
-mainobjective = 'This is the main objective selected by defalt, [ON CONSTRUCTION]\n '
 
 mobsituationlist = []
 mobsonround = []
@@ -32,7 +21,6 @@ mediummobs = ['Bandit', 'Goblin', 'Ranged Goblin', 'Bear', 'Wolf']
 mediumitems = ['Armor(+3)', 'Potion(+5)', 'Sword(+4)', '10 Coins', '15 Coins', '5 Coins']
 hardmobs = ['Stormclock soudier']
 moblevel = 0
-
 
 
 class Hostile():
@@ -65,27 +53,6 @@ class Player():
         self.skillnum = 2
     def info(self):
         return f'{self.name} is a {self.race} Lv{self.level} ({self.xp}/{self.xpnextlevel})  HP: ({self.hp}/{self.maxhp})\nStr: {self.strength}|Agi: {self.agility}|Con: {self.constitution}|Int: {self.inteligence}|Car: {self.carism}'
-
-player[0] = Player('admin', 'orc', 1, 2, 3, 4, 5)
-player[1] = Player('admin2', 'elf', 1, 2, 3, 4, 5)
-player[0].id = 0
-player[1].id = 1
-
-'''
-def historyprogress():
-    clear()
-    title = 'History historyprogress'
-    print(f"{'#' * 10} {title} {'#' * (40 - len(title))}")
-    print(f"Active missions:\n{missions}")
-    print(f'Players:\n{allplayers}')
-    print(f'Actual Objective description:\n{mainobjective}')
-    print('Here i want to implement a system that fowards on the history by the master order')
-    print('A choice path system that can be configurable before by the master to adapt')
-    print('the software to any back history, you will only need to input your parameters of')
-    input('choices and the chapter description or something to "guide" you on your own history ')
-    clear()
-    menu()
-'''
 
 def godmenu():
     clear()
@@ -130,10 +97,10 @@ def godmenu():
         input("invalid input [155]")
         godmenu()
 
-def createplayer():
+def createplayer(name):
     clear()
     global player, allplayers, allplayerscount
-    createdplayer = Player(input("Player name: "), input("Race: "), input("Strenght: "), input("Agility: "), input("Constitution: "), input("Inteligence: "), input("Carism: "))
+    createdplayer = Player(name, input("Race: "), input("Strenght: "), input("Agility: "), input("Constitution: "), input("Inteligence: "), input("Carism: "))
     allplayers.insert(allplayerscount, ('Player:', allplayerscount, "Name:" + createdplayer.name, "ID:", allplayerscount))
     player.insert((allplayerscount + 1), '')
     player[allplayerscount] = createdplayer
@@ -454,8 +421,7 @@ def sortuple(tup):
                 actualround[j + 1] = temptup
     return f'Actual round in crescent order: {actualround}'
 
-def clear():
-    os.system('cls' if os.name=='nt' else 'clear')
+
 
 def combat(attacker, target, mode):  # Mode > 2 = Player attack mob  | 1 = Mob attack player
     if mode == 2:
@@ -529,4 +495,21 @@ def combat(attacker, target, mode):  # Mode > 2 = Player attack mob  | 1 = Mob a
             input('Error, hostile not found')
             situationmenu()
 
-platform()
+
+def clear():
+    os.system('cls' if os.name=='nt' else 'clear')
+
+
+userinput = input('\n\nEnter your name: ')
+if len(userinput) < 4 or len(userinput) > 14 or userinput.isdigit():
+    input('Error! Must be at least 4 caracter and max 14 caracter')
+    clear()
+    userinput = input('Enter your name: ')
+else:
+    clear()
+    print('#' * 110)
+    history = ' [Lester]: Alright, ' + str(userinput) + '. I will search for survivors in another place, see you around.'
+    boxer(history, 2)
+    createplayer(str(userinput))
+                
+
