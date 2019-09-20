@@ -1,1 +1,1 @@
-title
+slot.insert(y, inv)
