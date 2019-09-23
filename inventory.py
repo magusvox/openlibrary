@@ -2,83 +2,55 @@ class Inventory:
     def __init__(self, size):
         self.size = size
         self.slots = self.size * self.size
-        self.items = []
-        self.slotx = self.size
-        self.sloty = self.size
+        self.itemslist = []
         self.itemson = 0
+        x = self.slots
+        while x > 0:
+            self.itemslist.insert(x, '[###################')
+            x -= 1
 
     def collect(self, item):
         if self.itemson < self.slots:
-            self.items.insert(self.itemson, (('[' + str(self.itemson + 1)+ '] ' + str(item)), self.slotx, self.sloty))
-            self.itemson += 1
-            if self.slotx == 1:
-                self.slotx = self.size
-                self.sloty -= 1
-            else:
-                self.slotx -= 1
+            sorting = True
+            y = 0   
+            while sorting:
+                if self.itemslist[y] == '[###################':
+                    self.itemslist[y] = ('[' + str(y) + '] ' + str(item))
+                    self.itemson += 1
+                    sorting = False
+                else:
+                    y += 1
         else:
-            return
+            print('No Enough Space')
 
     def drop(self, itemid):
-        if itemid <= self.itemson:
-            self.items.insert(itemid, '##########')  # continuehere
+        if self.itemslist[itemid] != '[###################':
+            self.itemslist[itemid] = '[###################'
+            self.itemson -= 1
         else:
-            print('q')
+            print('Slot already free')
 
     def draw(self):
-        columns = self.size
-        rows = self.size
-        slot = []
-        x = self.itemson     # Quantity of items
-        z = 0                   # Items progression
-        while columns > 0:
-            while rows > 0:
-                controw = self.size
-                y = 0           # Slot progression
-                while controw > 0:
-                    if x > 0:
-                        try:
-                            if columns == self.items[z][2] and rows == self.items[z][1]:
-                                inv = self.items[z][0] + (' ' * (10 - len(self.items[z][0])))
-                                slot.insert(y, inv)
-                                rows -= 1
-                                controw -= 1
-                                y += 1
-                                x -= 1
-                                z += 1
-                            else:
-                                inv = '##########'
-                                slot.insert(y, inv)
-                                y += 1
-                                rows -= 1
-                                controw -= 1
-                        except IndexError:
-                            return
-                    else:
-                        inv = '##########'
-                        slot.insert(y, inv)
-                        y += 1
-                        rows -= 1
-                        controw -= 1
+        print('---------------------')
+        x = len(self.itemslist)
+        z = 0           # Item print progression
+        slotado = 0     # Num of real items
+        while x > 0:
+            slot = self.itemslist[z] + (' ' * (20 - len(self.itemslist[z])) + ']')
             print(slot)
-            slot = []
-            columns -= 1
-            rows = self.size
-        return f"Inventory capacity: [{self.itemson}/{self.slots}]"
+            x -= 1
+            z += 1
+            if slot != '[###################]':
+                slotado += 1
+        print('---------------------')
+        return f"Inventory capacity: [{slotado}/{self.slots}]"
 
-inv = Inventory(3)
-inv.collect('sword')
-inv.collect('knife')
-
-inv.collect('helmet')
-inv.collect('rock')
-inv.collect('sword')
-inv.collect('helmet')
-inv.collect('rock')
-inv.collect('final')
-
-
-
-input(inv.draw())
-input(inv.drop(3))
-input(inv.draw())
+inv = Inventory(2)
+inv.collect('test')
+inv.collect('test2')
+print(inv.draw())
+inv.drop(0)
+print(inv.draw())
+inv.collect('test3')
+inv.collect('test4')
+print(inv.draw())
