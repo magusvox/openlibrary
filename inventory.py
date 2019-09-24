@@ -43,14 +43,4 @@ class Inventory:
             if slot != '[###################]':
                 slotado += 1
         print('---------------------')
-        return f"Inventory capacity: [{slotado}/{self.slots}]"
-
-inv = Inventory(2)
-inv.collect('test')
-inv.collect('test2')
-print(inv.draw())
-inv.drop(0)
-print(inv.draw())
-inv.collect('test3')
-inv.collect('test4')
-print(inv.draw())
+        print(f"Inventory capacity: [{slotado}/{self.slots}]")

@@ -1,5 +1,5 @@
 import os
-
+player = []
 def boxer(texting, mode):  # 0 = text   |   1 = Centralized and closed scope    |   2 = bottom scope open
     textsize = len(texting)
     line = ['','','','','','','','','','']  # max 10 lines

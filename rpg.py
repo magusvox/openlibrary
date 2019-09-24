@@ -1,11 +1,14 @@
 # Missions:
 # [0] Main Mission  [1] Sub1    [2] Sub2    [3] Sub3
 import random, os
-from display import boxer, hud
+from display import boxer
+from inventory import Inventory
 
 
 # Main Initialization #
-
+player = ['']
+personalhistory = ''
+inv = ''
 mobsituationlist = []
 mobsonround = []
 mobsonroundcount = 0
@@ -22,7 +25,6 @@ mediumitems = ['Armor(+3)', 'Potion(+5)', 'Sword(+4)', '10 Coins', '15 Coins', '
 hardmobs = ['Stormclock soudier']
 moblevel = 0
 
-
 class Hostile():
     def __init__(self, name, hp, defense, mindmg, maxdmg):
         self.name = name
@@ -33,125 +35,30 @@ class Hostile():
         self.maxdmg = maxdmg
         self.id = mobsonroundcount
         self.dodge = 5
+class Entity:
+    hp = 100
+    maxhp = hp
+    stamina = 100
+    maxstamina = stamina
+    mana = 100
+    maxmana = mana
+    race = 'Human'
+    humor = 0
+    typeof = 0  # 0 = Player | 1 = Friendly | 2 = Hostile
+    location = 'Unknown'
+    def interact(self, other):  # other = get id
+        print(f"{self.name} interacts with {other.name}")
 
-class Player():
-    def __init__(self, name, race, strength, agility, constitution, inteligence, carism):
+class Player(Entity):
+    def __init__(self, name): 
+        self.identity = 0   
         self.name = name
-        self.race = race
-        self.strength = strength
-        self.agility = agility
-        self.constitution = constitution
-        self.inteligence = inteligence
-        self.carism = carism
         self.level = 1
-        self.id = allplayerscount
-        self.xp = 0
-        self.xpnextlevel = 100
-        self.hp = (int(constitution) * 2) + 3
-        self.maxhp = (int(constitution) * 2) + 3
-        self.skills = [('Simple Attack', 5), ('Fireball', 8)]
-        self.skillnum = 2
-    def info(self):
-        return f'{self.name} is a {self.race} Lv{self.level} ({self.xp}/{self.xpnextlevel})  HP: ({self.hp}/{self.maxhp})\nStr: {self.strength}|Agi: {self.agility}|Con: {self.constitution}|Int: {self.inteligence}|Car: {self.carism}'
-
-def godmenu():
-    clear()
-    global player
-    title = 'God Tools'
-    print(f"{'#' * 10} {title} {'#' * (40 - len(title))}")
-    userinput = input(f"[1] Add mission\n[2] Modify Player status\n[4] empty\n[5] Back to tools\nChoose a option: ")
-    if userinput == '1':
-        godmenu()
-    elif userinput == '2':
-        userinput = input("Enter player ID: ")
-        playerid = int(userinput)
-        try:
-            print(f'Actual Str of {player[playerid].name}: {player[playerid].strength}')
-            userinput = input('New Strength: ')
-            player[playerid].strength = int(userinput)
-            print(f'Actual Agi of {player[playerid].name}: {player[playerid].agility}')
-            userinput = input('New Agility: ')
-            player[playerid].agility = int(userinput)
-            print(f'Actual Con of {player[playerid].name}: {player[playerid].constitution}')
-            userinput = input('New Constitution: ')
-            player[playerid].constitution = int(userinput)
-            player[playerid].hp = (player[playerid].constitution * 2) + 3
-            player[playerid].maxhp = (player[playerid].constitution * 2) + 3
-            print(f'Actual Int of {player[playerid].name}: {player[playerid].inteligence}')
-            userinput = input('New Inteligence: ')
-            player[playerid].inteligence = int(userinput)
-            print(f'Actual Car of {player[playerid].name}: {player[playerid].carism}')
-            userinput = input('New Carism: ')
-            player[playerid].carism = int(userinput)
-            print(f'Actual Lvl of {player[playerid].name}: {player[playerid].level}')
-            userinput = input('New Level: ')
-            player[playerid].level = int(userinput)
-            input(f'Successful!\n{player[playerid].info()}')
-            godmenu()
-        except IndexError:
-            input("Player not found.")
-            godmenu()
-    elif userinput == '5':
-        tools()
-    else:
-        input("invalid input [155]")
-        godmenu()
-
-def createplayer(name):
-    clear()
-    global player, allplayers, allplayerscount
-    createdplayer = Player(name, input("Race: "), input("Strenght: "), input("Agility: "), input("Constitution: "), input("Inteligence: "), input("Carism: "))
-    allplayers.insert(allplayerscount, ('Player:', allplayerscount, "Name:" + createdplayer.name, "ID:", allplayerscount))
-    player.insert((allplayerscount + 1), '')
-    player[allplayerscount] = createdplayer
-    allplayerscount += 1
-    input(f"Succesful! {createdplayer.name} is the Player N:{createdplayer.id}")
-    menu()
-
-def playersmenu():
-    clear()
-    title = 'Players Menu'
-    print(f"{'#' * 10} {title} {'#' * (40 - len(title))}")
-    userinput = input('[1] Create new Player\n[2] Player stats\n[3] nsei\n[4] nsei\n[5] Back to menu\nChoose a option: ')
-    if userinput == '1':
-        createplayer()
-    elif userinput == '2':
-        userinput = input('Enter player ID: ')
-        try:
-            input(player[int(userinput)].info())
-            playersmenu()
-        except IndexError:
-            input("Player not found")
-            playersmenu()
-    elif userinput == '5':
-        clear()
-        menu()
-    else:
-        input('Invalid Input [188]')
-        playersmenu()
-
-def roundmanager():
-    clear()
-    global actualround, mobsituationlist, mobsonroundcount, hostile
-    title = 'Round Manager'
-    print(f"{'#' * 10} {title} {'#' * (30 - len(title))} {str(mobsonroundcount)}")
-    userinput = input('[1] Hostile Situation\n[2] empty\n[3] empty\n[4] empty\n[5] Back to menu\nChoose a option: ')
-    if userinput == '1':
-        clear()
-        situationmenu()
-    elif userinput == '2':
-        situationmenu()
-    elif userinput == '3':
-        clear()
-        roundmanager()
-    elif userinput == '4':
-        roundmanager()     
-    elif userinput == '5':
-        clear()
-        menu()
-    else:
-        input('Invalid Input [211]')
-        roundmanager()
+        self.exp = 0
+        self.expnextlevel = 100
+        self.strengh = 0
+        self.agility = 0
+        self.inteligence = 0
 
 def situationmenu():
     clear()
@@ -361,56 +268,7 @@ def situationmenu():
     else:
         print('Invalid Input[442]')
         situationmenu()
-
-def tools():
-    clear()
-    title = 'Tools'
-    print(f"{'#' * 10} {title} {'#' * (40 - len(title))}")
-    userinput = input('[1] Dices\n[2] Round Manager\n[3] Player def\n[4] God tools\n[5] Back to menu\nChoose a option: ')
-    if userinput == '1':
-        userinput = input('[1] D4\n[2] D6\n[3] D8\n[4] D10\n[5] D20\n[0] custom\nChoose: ')
-        if userinput == '1':
-            input(f'The dice D4 rolls... {random.randint(1, 4)}')
-            tools()
-        elif userinput == '2':
-            input(f'The dice D6 rolls... {random.randint(1, 6)}')
-            tools()
-        elif userinput == '3':
-            input(f'The dice D8 rolls... {random.randint(1, 8)}')
-            tools()
-        elif userinput == '4':
-            input(f'The dice D10 rolls... {random.randint(1, 10)}')
-            tools()
-        elif userinput == '5':
-            input(f'The dice D20 rolls... {random.randint(1, 20)}')
-            tools()
-        elif userinput == '0':
-            intx = input('Enter custom dice max result: ')
-            try:
-                input(f'The dice D{intx} rolls... {random.randint(1, int(intx))}')
-                tools()
-            except ValueError:
-                input('oops')
-                tools()
-        else:
-            input('Invalid input [476]')
-            tools()
-    elif userinput == '2':
-        roundmanager()
-    elif userinput == '3':
-        userinput = input('player id: ')
-        #input(defense(int(userinput)))
-        tools()
-    elif userinput == '4':
-        godmenu()
-    elif userinput == '5':
-        clear()
-        menu()
-    else:
-        input('Invalid input [490]')
-        clear()
-        menu()
-    
+  
 def sortuple(tup):
     lst = len(actualround)
     for i in range(0, lst):
@@ -420,8 +278,6 @@ def sortuple(tup):
                 actualround[j] = actualround[j + 1]
                 actualround[j + 1] = temptup
     return f'Actual round in crescent order: {actualround}'
-
-
 
 def combat(attacker, target, mode):  # Mode > 2 = Player attack mob  | 1 = Mob attack player
     if mode == 2:
@@ -495,12 +351,32 @@ def combat(attacker, target, mode):  # Mode > 2 = Player attack mob  | 1 = Mob a
             input('Error, hostile not found')
             situationmenu()
 
-
 def clear():
-    os.system('cls' if os.name=='nt' else 'clear')
+    os.system('clear' if os.name=='nt' else 'clear')
 
+def hud(playerid):
+    clear()
+    playershowclass = player[playerid].race + ' Lv ' + str(player[playerid].level) + ' [' + str(player[playerid].exp) + '/' + str(player[playerid].expnextlevel) + '] '
+    playershowpoints = '  ' + str(player[playerid].hp) + '/' + str(player[playerid].maxhp) + '   ' + str(player[playerid].stamina) + '/' + str(player[playerid].maxstamina)
+    playerstatus = '     | ' + player[playerid].name + (' ' * (14 - len(player[playerid].name))) + '| ' + playershowclass + (' ' * (24 - len(playershowclass))) + '|' + playershowpoints + (' ' * (18 - len(playershowpoints))) + '  | ' + player[playerid].location
+    hudplayer = '      | Player[' + str(player[playerid].identity) + ']     | Class                   |    HP    | Stamina  | Location                            #\n# ' + playerstatus
+    hudfinal = ('#' + hudplayer + (' ' * (219 - len(hudplayer))) + '#\n' + ('#' * 110))
+    print(hudfinal)
 
-userinput = input('\n\nEnter your name: ')
+def playermenu():
+    userinput = input(f'[1] Take a Action\n[2] Open Inventory\n[3] ...\n[4] ...\n\nTerminal: ')
+    if userinput == '2':
+        clear()
+        inv.draw()
+        input('back')
+        clear()
+        hud(0)
+        playermenu()
+    
+
+################################    Game Start \/
+
+userinput = input('\nEnter your name: ')
 if len(userinput) < 4 or len(userinput) > 14 or userinput.isdigit():
     input('Error! Must be at least 4 caracter and max 14 caracter')
     clear()
@@ -508,8 +384,19 @@ if len(userinput) < 4 or len(userinput) > 14 or userinput.isdigit():
 else:
     clear()
     print('#' * 110)
-    history = ' [Lester]: Alright, ' + str(userinput) + '. I will search for survivors in another place, see you around.'
+    history = ' [Lester]: Alright, ' + str(userinput) + '. Be careful, they still here somewere. We have to get out of here. I will search for survivors in another place, see you around.'
     boxer(history, 2)
-    createplayer(str(userinput))
+    input('')
+    allplayerscount = 1
+    player[0] = Player(str(userinput))
+    inv = Inventory(2)
+    personalhistory = '[' + player[0].name + ']: Agh! What is happening? I cant remember anything and my head keep spinning. Who is Lester? And where am i? '
+    clear()
+    boxer(personalhistory, 2)
+    input('')
+    clear()
+    hud(0)
+    playermenu()
+    
                 
 
