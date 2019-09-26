@@ -3,13 +3,16 @@
 import random, os
 from display import boxer
 from inventory import Inventory
+from pygame import mixer
 
 
 # Main Initialization #
 player = ['']
 personalhistory = ''
 inv = ''
-mobsituationlist = []
+
+actualsituation = 'For some reason, you lost your memory and dont remember anything before Lester wakes you'
+'''mobsituationlist = []
 mobsonround = []
 mobsonroundcount = 0
 mobsonroundcount2 = 0  # This var is for showing hostilenames even when a mob dies and the mobsonroundcunt is subtracted to -1
@@ -23,7 +26,7 @@ easyitems = ['Short sword(+2)', 'Rope', 'trash', 'Animal skin', '5 Coins']
 mediummobs = ['Bandit', 'Goblin', 'Ranged Goblin', 'Bear', 'Wolf']
 mediumitems = ['Armor(+3)', 'Potion(+5)', 'Sword(+4)', '10 Coins', '15 Coins', '5 Coins']
 hardmobs = ['Stormclock soudier']
-moblevel = 0
+moblevel = 0'''
 
 class Hostile():
     def __init__(self, name, hp, defense, mindmg, maxdmg):
@@ -350,6 +353,12 @@ def combat(attacker, target, mode):  # Mode > 2 = Player attack mob  | 1 = Mob a
         except IndexError:
             input('Error, hostile not found')
             situationmenu()
+############################################################################################
+ 
+
+def takeaction(actualsituation):
+    boxer(actualsituation)
+    userinput = 'a'
 
 def clear():
     os.system('clear' if os.name=='nt' else 'clear')
@@ -359,44 +368,79 @@ def hud(playerid):
     playershowclass = player[playerid].race + ' Lv ' + str(player[playerid].level) + ' [' + str(player[playerid].exp) + '/' + str(player[playerid].expnextlevel) + '] '
     playershowpoints = '  ' + str(player[playerid].hp) + '/' + str(player[playerid].maxhp) + '   ' + str(player[playerid].stamina) + '/' + str(player[playerid].maxstamina)
     playerstatus = '     | ' + player[playerid].name + (' ' * (14 - len(player[playerid].name))) + '| ' + playershowclass + (' ' * (24 - len(playershowclass))) + '|' + playershowpoints + (' ' * (18 - len(playershowpoints))) + '  | ' + player[playerid].location
-    hudplayer = '      | Player[' + str(player[playerid].identity) + ']     | Class                   |    HP    | Stamina  | Location                            #\n# ' + playerstatus
-    hudfinal = ('#' + hudplayer + (' ' * (219 - len(hudplayer))) + '#\n' + ('#' * 110))
-    print(hudfinal)
+    hudplayer = '      | Player[' + str(player[playerid].identity) + ']     | Class                   |    HP    | Stamina  | Location                   \n ' + playerstatus
+    hudfinal = (hudplayer + (' ' * (209 - len(hudplayer))))
+    boxer(hudfinal)
 
 def playermenu():
-    userinput = input(f'[1] Take a Action\n[2] Open Inventory\n[3] ...\n[4] ...\n\nTerminal: ')
+    global musicstate
+    mixer.Sound.play(clicksound)
+    userinput = input(f'[1] Take a Action\n[2] Open Inventory\n[3] ...\n[4] Options\n\nTerminal: ')
     if userinput == '2':
+        mixer.Sound.play(clicksound)
         clear()
         inv.draw()
-        input('back')
+        input("\n" + ('#' * 100) + "\n\nTerminal: ")
+        mixer.Sound.play(clicksound)
         clear()
         hud(0)
         playermenu()
+    elif userinput == '4':
+        mixer.Sound.play(clicksound)
+        boxer(("[1] Music is " + musicstate + "\n[0] Back"))
+        userinput = input('\n\nTerminal: ')
+        mixer.Sound.play(clicksound)
+        if userinput == '1':
+            if mixer.music.get_volume() > 0: 
+                musicstate = '[ OFF ]'
+                mixer.music.set_volume(0)
+                clear()
+                hud(0)
+                playermenu()
+            else:
+                musicstate = '[ ON ]'
+                mixer.music.set_volume(1)
+                clear()
+                hud(0)
+                playermenu()
+        else:
+            clear()
+            hud(0)
+            playermenu()
     
 
 ################################    Game Start \/
+mixer.init()
+mixer.music.stop()
+mixer.music.load('sounds/playermenu.wav')
+clicksound = mixer.Sound('sounds/click.wav')
+musicstate = '[ ON ]'
+
 
 userinput = input('\nEnter your name: ')
-if len(userinput) < 4 or len(userinput) > 14 or userinput.isdigit():
+while len(userinput) < 4 or len(userinput) > 14 or userinput.isdigit():
+    mixer.Sound.play(clicksound)
     input('Error! Must be at least 4 caracter and max 14 caracter')
     clear()
     userinput = input('Enter your name: ')
-else:
-    clear()
-    print('#' * 110)
-    history = ' [Lester]: Alright, ' + str(userinput) + '. Be careful, they still here somewere. We have to get out of here. I will search for survivors in another place, see you around.'
-    boxer(history, 2)
-    input('')
-    allplayerscount = 1
-    player[0] = Player(str(userinput))
-    inv = Inventory(2)
-    personalhistory = '[' + player[0].name + ']: Agh! What is happening? I cant remember anything and my head keep spinning. Who is Lester? And where am i? '
-    clear()
-    boxer(personalhistory, 2)
-    input('')
-    clear()
-    hud(0)
-    playermenu()
+
+mixer.Sound.play(clicksound)
+history = '[Lester]: Alright, ' + str(userinput) + '. Be careful, they still here somewere. We have to get out of here. I will  search for survivors in another place, see you around.'
+boxer(history)
+input('\n\nPress enter do Continue')
+mixer.Sound.play(clicksound)
+allplayerscount = 1
+player[0] = Player(str(userinput))
+inv = Inventory(2)
+personalhistory = '[' + player[0].name + ']: Agh! What is happening? I cant remember anything and my head keep spinning. Who is Lester? And where am i? '
+boxer(personalhistory)
+input('\n\nPress enter do Continue')
+mixer.Sound.play(clicksound)
+clear()
+mixer.music.play(-1)
+musicstate = '[ ON ]'
+hud(0)
+playermenu()
     
                 
 
