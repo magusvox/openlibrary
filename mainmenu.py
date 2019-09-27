@@ -6,7 +6,7 @@ from pygame import mixer
 #atmosphere = pygame.mixer.Sound("mainmenu.strange-stuff.ogg")
 
 def platform():
-    boxer('                     Terminal Role Play   By: MagusVOX ')
+    boxer('                     Terminal Castaway   By: MagusVOX ')
     userinput = input('[1] Start a New Game\n[2] Load Game (Not Available)\n[3] Options(Not Available)\n[0] Exit\n\nTerminal: ')
     mixer.Sound.play(clicksound)
     if userinput == '1':
@@ -15,13 +15,19 @@ def platform():
         userinput = input('[1] Single Player\n[2] Multi-Player (Not Available)\n[0] Back to menu\n\nTerminal: ')
         if userinput == '1':
             mixer.Sound.play(clicksound)
-            boxer('Terminal Role Play is a experiment. The main goal is to make a game all on text that can run on any pc by terminal. Feel free to modify and send pull requests on Github. ')
+            boxer('This is a experiment. The main goal is to make a terminal game that can run on any pc by terminal. Feel free to modify and send pull requests on Github. ')
             input('\n\nPress Enter to Continue ')
             mixer.Sound.play(clicksound)
-            boxer('[Strange]: Wake up, Mr... dont know your name, but now you are a free man! lets get out of this     place, its not safe here. ')
+            boxer('Chapter 1')
             input('\n\nPress Enter to Continue ')
             mixer.Sound.play(clicksound)
-            boxer('[Lester]: By the way, my name is Lester, what is your name? ')
+            boxer('[Commander]: We are now passing by a storm, everyone please stay down ')
+            input('\n\nPress Enter to Continue ')
+            mixer.Sound.play(clicksound)
+            boxer('[Alert! Alert! Alert! Alert!]')
+            input('\n\nPress Enter to Continue ')
+            mixer.Sound.play(clicksound)
+            boxer('[Commander]: WE ARE GOING DOWN!! ')
             input('\n\nPress Enter to Continue ')
             mixer.Sound.play(clicksound)
             import rpg
@@ -48,7 +54,7 @@ def clear():
 clear()
 clear()
 mixer.init()
-mixer.music.load('sounds/mainmenu.strange-stuff.ogg')
+mixer.music.load('sounds/aquaticambience.mp3')
 clicksound = mixer.Sound('sounds/click.wav')
 mixer.music.play(-1)
 print(f"{'#' * 100}\nPress Enter to Continue!\n{'#' * 100}\n\n")

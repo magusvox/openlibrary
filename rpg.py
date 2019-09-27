@@ -10,23 +10,11 @@ from pygame import mixer
 player = ['']
 personalhistory = ''
 inv = ''
+options = ['[1] Hunt in the Jungle', '.', '.', '.', '.']
+costs = [' Cost [20] Stamina', '.', '.', '.', '.',]
 
 actualsituation = 'For some reason, you lost your memory and dont remember anything before Lester wakes you'
-'''mobsituationlist = []
-mobsonround = []
-mobsonroundcount = 0
-mobsonroundcount2 = 0  # This var is for showing hostilenames even when a mob dies and the mobsonroundcunt is subtracted to -1
-actualround = ['']
-hostile = []
-hostilename = []
-mobsdeadcount = 0
-randomnpc = ['Hunter', 'Wise man', 'Citizen', ]
-easymobs = ['Wolf', 'Boar', 'Goblin', 'Little Bear']
-easyitems = ['Short sword(+2)', 'Rope', 'trash', 'Animal skin', '5 Coins']
-mediummobs = ['Bandit', 'Goblin', 'Ranged Goblin', 'Bear', 'Wolf']
-mediumitems = ['Armor(+3)', 'Potion(+5)', 'Sword(+4)', '10 Coins', '15 Coins', '5 Coins']
-hardmobs = ['Stormclock soudier']
-moblevel = 0'''
+
 
 class Hostile():
     def __init__(self, name, hp, defense, mindmg, maxdmg):
@@ -38,239 +26,30 @@ class Hostile():
         self.maxdmg = maxdmg
         self.id = mobsonroundcount
         self.dodge = 5
-class Entity:
-    hp = 100
-    maxhp = hp
-    stamina = 100
-    maxstamina = stamina
-    mana = 100
-    maxmana = mana
-    race = 'Human'
-    humor = 0
-    typeof = 0  # 0 = Player | 1 = Friendly | 2 = Hostile
-    location = 'Unknown'
-    def interact(self, other):  # other = get id
-        print(f"{self.name} interacts with {other.name}")
 
-class Player(Entity):
+class Player():
     def __init__(self, name): 
         self.identity = 0   
         self.name = name
+        self.hp = 100
+        self.maxhp = self.hp
+        self.stamina = 100
+        self.maxstamina = self.stamina
         self.level = 1
         self.exp = 0
         self.expnextlevel = 100
-        self.strengh = 0
-        self.agility = 0
-        self.inteligence = 0
+        self.strengh = 2
+        self.agility = 2
+        self.inteligence = 2
 
-def situationmenu():
-    clear()
-    global mobsituationlist, mobsonroundcount, mobsonroundcount2, moblevel, hostile, easyitems, actualround, hostilename, mobsdeadcount
-    title = 'Situation Generator'
-    print(f"{'#' * 10} {title} {'#' * (30 - len(title))} Actual round: {actualround}")
-    ##### Pre-initializations, this can be on a single function on future, but for now
-    ##### it will be here some codes that has to be run to show the actual stats
-    if mobsonroundcount > 0:  # Mobs name/hp
-        inty = mobsonroundcount2
-        intx = 0
-        mobsituationlist = []    
-        while inty > 0:
-            mobsituationlist.insert(intx, hostilename[intx])
-            inty -= 1
-            intx += 1
-    else:
-        mobsonroundcount2 = 0
-    tempplayerslist = allplayerscount
-    intx = 0
-    allplayers = []
-    while tempplayerslist > 0:
-        allplayers.insert(intx, player[intx].name + ' HP:(' + str(player[intx].hp) + '/' + str(player[intx].maxhp) + ') ID:[' + str(player[intx].id) + ']')
-        tempplayerslist -= 1
-        intx -= 1
-    userinput = input(f'[1] Generate a Mob Encounter\n[2] Generate Round Order\n[3] Get Attacked by Mob > {allplayers}\n[4] Attack/Interact with > {mobsituationlist}\n[5] Back to Round manager\nChoose a option: ')
-    if userinput == '1':
-        if mobsonroundcount == 0:
-            userinput = input('Dificulty level: ')
-            try:
-                moblevel = int(userinput)  # Level of mobs
-                inty = random.randint((allplayerscount - (random.randint(0, allplayerscount))), allplayerscount)  # Quantity of mobs
-                intyground = 0
-                # inty = Random int between ALL - (rand 0, all) and ALL
-                mobsituationtemp = []
-                #Easy Mobs creation
-                while inty > 0 and moblevel <= 3:
-                    mob = random.randint(0, (len(easymobs) - 1))
-                    mobsituationtemp.insert(inty, (easymobs[mob]))
-                    mobsonroundcount += 1
-                    mobsonroundcount2 += 1
-                    inty -= 1
-                    if 'Wolf' in mobsituationtemp[intyground]:
-                        hostile.insert(intyground, Hostile('Wolf', 10, 1, 3, 5))
-                        hostilename.insert(intyground, hostile[intyground].name + ' HP:(' + str(hostile[intyground].hp) + '/' + str(hostile[intyground].maxhp) + ') ID:[' + str(intyground) + ']')
-                        intyground += 1
-                    elif 'Boar' in mobsituationtemp[intyground]:
-                        hostile.insert(intyground, Hostile('Boar', 9, 0, 2, 4))
-                        hostilename.insert(intyground, hostile[intyground].name + ' HP:(' + str(hostile[intyground].hp) + '/' + str(hostile[intyground].maxhp) + ') ID:[' + str(intyground) + ']')
-                        intyground += 1
-                    elif 'Goblin' in mobsituationtemp[intyground]:
-                        hostile.insert(intyground, Hostile('Goblin', 14, 2, 4, 6))
-                        hostilename.insert(intyground, hostile[intyground].name + ' HP:(' + str(hostile[intyground].hp) + '/' + str(hostile[intyground].maxhp) + ') ID:[' + str(intyground) + ']')
-                        intyground += 1
-                    elif 'Little Bear' in mobsituationtemp[intyground]:
-                        hostile.insert(intyground, Hostile('Little Bear', 13, 0, 4, 5))
-                        hostilename.insert(intyground, hostile[intyground].name + ' HP:(' + str(hostile[intyground].hp) + '/' + str(hostile[intyground].maxhp) + ') ID:[' + str(intyground) + ']')
-                        intyground += 1
-                #Medium Mobs creation ['Bandit', 'Goblin', 'Ranged Goblin', 'Bear', 'Wolf']
-                while inty > 0 and moblevel > 3 and moblevel <= 6:
-                    mob = random.randint(0, (len(mediummobs) - 1))
-                    mobsituationtemp.insert(inty, (mediummobs[mob]))
-                    if 'Wolf' in mobsituationtemp[intyground]:
-                        hostile.insert(intyground, Hostile('Wolf', 10, 1, 3, 5))
-                        hostilename.insert(intyground, hostile[intyground].name + ' HP:(' + str(hostile[intyground].hp) + '/' + str(hostile[intyground].maxhp) + ') ID:[' + str(intyground) + ']')
-                        intyground += 1
-                    elif 'Bandit' in mobsituationtemp[intyground]:
-                        hostile.insert(intyground, Hostile('Bandit', 14, 2, 5, 6))
-                        hostilename.insert(intyground, hostile[intyground].name + ' HP:(' + str(hostile[intyground].hp) + '/' + str(hostile[intyground].maxhp) + ') ID:[' + str(intyground) + ']')
-                        intyground += 1
-                    elif 'Goblin' in mobsituationtemp[intyground]:
-                        hostile.insert(intyground, Hostile('Goblin', 14, 2, 4, 6))
-                        hostilename.insert(intyground, hostile[intyground].name + ' HP:(' + str(hostile[intyground].hp) + '/' + str(hostile[intyground].maxhp) + ') ID:[' + str(intyground) + ']')
-                        intyground += 1
-                    elif 'Ranged Goblin' in mobsituationtemp[intyground]:
-                        hostile.insert(intyground, Hostile('Ranged Goblin', 10, 0, 5, 7))
-                        hostilename.insert(intyground, hostile[intyground].name + ' HP:(' + str(hostile[intyground].hp) + '/' + str(hostile[intyground].maxhp) + ') ID:[' + str(intyground) + ']')
-                        intyground += 1
-                    elif 'Bear' in mobsituationtemp[intyground]:
-                        hostile.insert(intyground, Hostile('Bear', 16, 3, 4, 7))
-                        hostilename.insert(intyground, hostile[intyground].name + ' HP:(' + str(hostile[intyground].hp) + '/' + str(hostile[intyground].maxhp) + ') ID:[' + str(intyground) + ']')
-                        intyground += 1
-                    mobsonroundcount += 1
-                    mobsonroundcount2 += 1
-                    inty -= 1
-                mobsituationlist = mobsituationtemp
-                input(mobsituationlist)
-                situationmenu()
-            except ValueError:
-                input('Invalid Input [302]')
-                situationmenu()
-        else:
-            input('Already on Hostile Situation, cant create a new one.')
-            situationmenu()
-    elif userinput == '2':
-        try:
-            playerturns = allplayerscount
-            mobsturns = mobsonroundcount
-            turns = allplayerscount + mobsonroundcount
-            round = []
-            while turns > 0:
-                if userinput.upper() != 'EXIT' and playerturns > 0:  # Break loop typing 'exit'
-                    userinput = input(f'Extra Attribute for {player[playerturns - 1].name}?: ')
-                    result = int(userinput) + random.randint(1, 20)
-                    if result > 20:
-                        result = 20
-                        round.insert(turns, (player[playerturns - 1].name, result))
-                        playerturns -= 1
-                        turns -= 1
-                    else:
-                        round.insert(turns, (player[playerturns - 1].name, result))
-                        playerturns -= 1
-                        turns -= 1
-                elif playerturns == 0 and mobsturns > 0:
-                    userinput = input(f"Extra Attribute for {hostilename[mobsturns - 1]}: ")  #feels like is almost working, keep on here
-                    result = int(userinput) + random.randint(1, 20)
-                    if result > 20:
-                        result = 20
-                        round.insert(turns, (hostilename[mobsturns - 1], result))
-                        mobsturns -= 1
-                        turns -= 1
-                    else:
-                        round.insert(turns, (hostilename[mobsturns - 1], result))
-                        mobsturns -= 1
-                        turns -= 1
-                else:
-                    input('Canceled')
-                    situationmenu()
-            actualround = round
-            input(sortuple(actualround))
-            situationmenu()
-        except ValueError:
-            input("value error")
-            situationmenu()
-    elif userinput == '3':
-        if mobsonroundcount > 0:
-            inty = mobsonroundcount + mobsdeadcount
-            intx = 0
-            round = []
-            while inty > 0:
-                print(f'[{intx}] {mobsituationlist[intx]}')
-                round.insert(intx, hostilename[intx]) 
-                inty -= 1  
-                intx += 1 
-            try:
-                userinput = input('Select the mob: ')
-                attacker = int(userinput)
-                try:
-                    if hostile[attacker].hp <= 0:
-                        input('Error, select a mob that is alive')
-                        situationmenu()
-                    else:
-                        print(f'Players: {allplayers}')
-                        userinput = input(f'Specify attack of {hostilename[attacker]}?\nEnter player ID or type "random" to randomize\nInput attack target: ')
-                        try:
-                            if userinput == 'random':
-                                target = random.randint(0, allplayerscount - 1)
-                                combat(attacker, target, 1)
-                            elif userinput.isdigit():
-                                target = int(userinput)
-                                combat(attacker, target, 1)
-                            else:
-                                input("Something went whrong")
-                                situationmenu()
-                        except ValueError:
-                            input("Invalid Input [378]")
-                            situationmenu()
-                except IndexError:
-                    input('Invalid Input [381]')
-                    situationmenu()
-            except ValueError:
-                input('Invalid Value')
-                situationmenu()
-        else:
-            input('Error, no mobs on round')
-            situationmenu()
-    elif userinput == '4':
-        userinput = input(f"{allplayers}\nWho will attack?: ")
-        try:
-            attacker = int(userinput)
-            if player[attacker].hp <= 0:
-                input(f"{player[attacker].name} cant attack because is dead. Select another player")
-                situationmenu()
-            else:
-                if mobsonroundcount > 0:
-                    inty = mobsonroundcount + mobsdeadcount  # Bug solution to show correct moblist after one or more are dead
-                    intx = 0
-                    round = []
-                    while inty > 0:
-                        print(f'[{intx}] {mobsituationlist[intx]}')
-                        round.insert(intx, hostilename[intx]) 
-                        inty -= 1
-                        intx += 1
-                    userinput = input('Select a target: ')
-                    target = int(userinput)
-                    print(f"{player[attacker].name} targeted {hostilename[target]}")
-                    combat(attacker, target, 2)
-                else:
-                    input("Something went whrong")
-                    situationmenu()
-        except IndexError:
-            input("Error, Player ID not found.")
-            situationmenu()
-    elif userinput == '5':
-        clear()
-        roundmanager()
-    else:
-        print('Invalid Input[442]')
-        situationmenu()
+def actionmenu():
+    hud(0)
+    userinput = input(f"{options[0]}{costs[0]} \n{options[1]}{costs[1]} \n{options[2]}{costs[2]} \n{options[3]}{costs[3]} \n{options[4]}{costs[4]} \n\nTerminal: ")
+    if chapter == 1:
+        if userinput == '1':
+            player[0].stamina
+            random.randint()
+            boxer('You discouver')
   
 def sortuple(tup):
     lst = len(actualround)
@@ -354,7 +133,48 @@ def combat(attacker, target, mode):  # Mode > 2 = Player attack mob  | 1 = Mob a
             input('Error, hostile not found')
             situationmenu()
 ############################################################################################
- 
+
+def createplayer(name):
+    clear()
+    player = Player(name)
+    input('You have 10 points to put on attributes')
+    points = 15
+    while points > 0:
+        information = '[' + player.name + '] Strengh: [' + str(player.strengh) + '] Agility: [' + str(player.agility) + '] Inteligence: [' + str(player.inteligence) + ']'
+        boxer(information)
+        userinput = input('[1] Add Strengh\n[2] Add Agility\n[3] Add Inteligence\n[0] Reset\n\nTerminal: ')
+        if userinput == '1':
+            player.strengh += 1
+            points -= 1
+        elif userinput == '2':
+            player.agility += 1
+            points -= 1
+        elif userinput == '3':
+            player.inteligence += 1
+            points -= 1
+        elif userinput == '0':
+            userinput = input('Confirm reset?\n[1] Confirm\n[0] Cancel\n\nTerminal: ')
+            if userinput == '1':
+                player.strengh = 2
+                player.agility = 2
+                player.inteligence = 2
+                points = 15
+            else:
+                return  ######Set the habilities or attributes that is important on a castaway
+        else:
+            clear()
+            input('Invalid Input!')
+    boxer(information)
+    userinput = input('Is everything right?\n[1] Confirm\n[0] Reset\n\nTerminal: ')
+    if userinput == '0':
+        player.strengh = 2
+        player.agility = 2
+        player.inteligence = 2
+        points = 15
+        createplayer(player.name)
+    else:
+        clear()
+
 
 def takeaction(actualsituation):
     boxer(actualsituation)
@@ -364,11 +184,10 @@ def clear():
     os.system('clear' if os.name=='nt' else 'clear')
 
 def hud(playerid):
-    clear()
-    playershowclass = player[playerid].race + ' Lv ' + str(player[playerid].level) + ' [' + str(player[playerid].exp) + '/' + str(player[playerid].expnextlevel) + '] '
+    playershowclass = ' Lv ' + str(player[playerid].level) + ' [' + str(player[playerid].exp) + '/' + str(player[playerid].expnextlevel) + '] '
     playershowpoints = '  ' + str(player[playerid].hp) + '/' + str(player[playerid].maxhp) + '   ' + str(player[playerid].stamina) + '/' + str(player[playerid].maxstamina)
-    playerstatus = '     | ' + player[playerid].name + (' ' * (14 - len(player[playerid].name))) + '| ' + playershowclass + (' ' * (24 - len(playershowclass))) + '|' + playershowpoints + (' ' * (18 - len(playershowpoints))) + '  | ' + player[playerid].location
-    hudplayer = '      | Player[' + str(player[playerid].identity) + ']     | Class                   |    HP    | Stamina  | Location                   \n ' + playerstatus
+    playerstatus = '     | ' + player[playerid].name + (' ' * (14 - len(player[playerid].name))) + '| ' + playershowclass + (' ' * (24 - len(playershowclass))) + '|' + playershowpoints + (' ' * (18 - len(playershowpoints))) + '  | '
+    hudplayer = '      | Player       | Class                   |    HP    | Stamina  | Location                   \n ' + playerstatus
     hudfinal = (hudplayer + (' ' * (209 - len(hudplayer))))
     boxer(hudfinal)
 
@@ -411,7 +230,6 @@ def playermenu():
 
 ################################    Game Start \/
 mixer.init()
-mixer.music.stop()
 mixer.music.load('sounds/playermenu.wav')
 clicksound = mixer.Sound('sounds/click.wav')
 musicstate = '[ ON ]'
@@ -423,6 +241,8 @@ while len(userinput) < 4 or len(userinput) > 14 or userinput.isdigit():
     input('Error! Must be at least 4 caracter and max 14 caracter')
     clear()
     userinput = input('Enter your name: ')
+
+createplayer(str(userinput))
 
 mixer.Sound.play(clicksound)
 history = '[Lester]: Alright, ' + str(userinput) + '. Be careful, they still here somewere. We have to get out of here. I will  search for survivors in another place, see you around.'
