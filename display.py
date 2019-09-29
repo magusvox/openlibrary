@@ -2,7 +2,7 @@ import os
 player = []
 def boxer(text):
     clear()
-    print(f"\n{text}\n\n{'#' * 100}")
+    print(f"\n{text}\n\n{'#' * 70}")
 
 def hud(playerid):
     clear()

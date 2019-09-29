@@ -1,6 +1,6 @@
 # Missions:
 # [0] Main Mission  [1] Sub1    [2] Sub2    [3] Sub3
-import random, os
+mport random, os
 from display import boxer
 from inventory import Inventory
 from pygame import mixer
@@ -132,7 +132,8 @@ def combat(attacker, target, mode):  # Mode > 2 = Player attack mob  | 1 = Mob a
         except IndexError:
             input('Error, hostile not found')
             situationmenu()
-############################################################################################
+##################################################################
+
 
 def createplayer(name):
     clear()
